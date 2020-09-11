@@ -2,8 +2,6 @@
 
 # See https://github.com/rafecolton/fmtpolice
 
-set -e
-
 readonly GOPATH="${GOPATH%%:*}"
 
 main() {
@@ -16,10 +14,12 @@ __gofiles() {
 }
 
 check_fmt() {
+  eval "set -e"
   for file in $(__gofiles) ; do
     echo "checking gofmt for $file"
     gofmt $file | diff -u $file -
   done
+  eval "set +e"
 }
 
 check_lint() {
@@ -39,7 +39,7 @@ _lint_verbose() {
 
 _install_linter() {
   if [[ ! -x "${GOPATH}/bin/golint" ]] ; then
-    GO111MODULE=off go get -u golang.org/x/lint/golint
+    go get -u github.com/golang/lint/golint
   fi
 }
 
